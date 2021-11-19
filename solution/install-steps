@@ -1,0 +1,80 @@
+Nginx ingress
+C:\Users\anwar\ak\k3d\solution> kubectl get all -n ingress-nginx
+NAME                                            READY   STATUS    RESTARTS   AGE
+pod/svclb-ingress-nginx-controller-7zgf5        2/2     Running   3          5d20h
+pod/ingress-nginx-controller-5c8d66c76d-gmftf   1/1     Running   1          5d20h
+
+NAME                                         TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
+service/ingress-nginx-controller-admission   ClusterIP      10.43.224.102   <none>        443/TCP                      5d20h
+service/ingress-nginx-controller             LoadBalancer   10.43.153.75    172.18.0.3    80:30509/TCP,443:31445/TCP   5d20h
+
+NAME                                            DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+daemonset.apps/svclb-ingress-nginx-controller   1         1         1       1            1           <none>          5d20h
+
+NAME                                       READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/ingress-nginx-controller   1/1     1            1           5d20h
+
+NAME                                                  DESIRED   CURRENT   READY   AGE
+replicaset.apps/ingress-nginx-controller-5c8d66c76d   1         1         1       5d20h
+
+Prometheus
+C:\Users\anwar\ak\k3d\solution> kubectl get all -n prometheus
+NAME                                                         READY   STATUS    RESTARTS   AGE
+pod/prometheus-prometheus-node-exporter-64zjt                1/1     Running   1          5d20h
+pod/prometheus-kube-prometheus-operator-86d499db8f-x2p6h     1/1     Running   1          5d20h
+pod/prometheus-grafana-74b9c448f6-7tvdg                      2/2     Running   2          5d20h
+pod/alertmanager-prometheus-kube-prometheus-alertmanager-0   2/2     Running   2          5d20h
+pod/prometheus-prometheus-kube-prometheus-prometheus-0       2/2     Running   2          5d20h
+pod/prometheus-kube-state-metrics-58c5cd6ddb-97vjs           1/1     Running   1          5d20h
+
+NAME                                              TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
+service/prometheus-grafana                        ClusterIP   10.43.74.120    <none>        80/TCP                       5d20h
+service/prometheus-kube-prometheus-alertmanager   ClusterIP   10.43.155.66    <none>        9093/TCP                     5d20h
+service/prometheus-prometheus-node-exporter       ClusterIP   10.43.98.244    <none>        9100/TCP                     5d20h
+service/prometheus-kube-prometheus-prometheus     ClusterIP   10.43.126.56    <none>        9090/TCP                     5d20h
+service/prometheus-kube-prometheus-operator       ClusterIP   10.43.89.32     <none>        443/TCP                      5d20h
+service/prometheus-kube-state-metrics             ClusterIP   10.43.243.170   <none>        8080/TCP                     5d20h
+service/alertmanager-operated                     ClusterIP   None            <none>        9093/TCP,9094/TCP,9094/UDP   5d20h
+service/prometheus-operated                       ClusterIP   None            <none>        9090/TCP                     5d20h
+
+NAME                                                 DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+daemonset.apps/prometheus-prometheus-node-exporter   1         1         1       1            1           <none>          5d20h
+
+NAME                                                  READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/prometheus-kube-prometheus-operator   1/1     1            1           5d20h
+deployment.apps/prometheus-grafana                    1/1     1            1           5d20h
+deployment.apps/prometheus-kube-state-metrics         1/1     1            1           5d20h
+
+NAME                                                             DESIRED   CURRENT   READY   AGE
+replicaset.apps/prometheus-kube-prometheus-operator-86d499db8f   1         1         1       5d20h
+replicaset.apps/prometheus-grafana-74b9c448f6                    1         1         1       5d20h
+replicaset.apps/prometheus-kube-state-metrics-58c5cd6ddb         1         1         1       5d20h
+
+NAME                                                                    READY   AGE
+statefulset.apps/alertmanager-prometheus-kube-prometheus-alertmanager   1/1     5d20h
+statefulset.apps/prometheus-prometheus-kube-prometheus-prometheus       1/1     5d20h
+
+App deployment
+C:\Users\anwar\ak\k3d\solution> kubectl get all -n test
+NAME                                 READY   STATUS    RESTARTS   AGE
+pod/test-node-app-65766d6f54-9kpm8   1/1     Running   0          2d20h
+
+NAME                    TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+service/test-node-app   ClusterIP   10.43.202.232   <none>        8080/TCP   2d20h
+
+NAME                            READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/test-node-app   1/1     1            1           2d20h
+
+NAME                                       DESIRED   CURRENT   READY   AGE
+replicaset.apps/test-node-app-65766d6f54   1         1         1       2d20h
+
+
+portforward
+C:\Users\anwar\ak\k3d\solution> kubectl port-forward --namespace=test  service/test-node-app 8080:8080
+
+browse
+http://localhost:8080/info
+[{"id":"1","country":"london","city":"england"},{"id":"2","country":"mars","city":"unknown"},{"id":"3","country":"here","city":"there"},{"id":"4","country":"time","city":"space"}]
+
+http://localhost:8080/health
+[{"status":"we is good"}]
