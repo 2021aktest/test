@@ -33,5 +33,7 @@ spec:
             capabilities:
               drop:
                 - all
-              add: ["MKNOD"]
+              add:
+                - NET_RAW
+          
             
